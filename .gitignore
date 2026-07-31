@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+.next/
+frontend/.next/
+frontend/out/
+
+# Hardhat / Solidity
+contracts/artifacts/
+contracts/cache/
+contracts/typechain-types/
+contracts/coverage/
+contracts/coverage.json
+
+# Environment files — contain private keys and API keys, never commit
+.env
+.env.local
+.env.*.local
+contracts/.env
+frontend/.env.local
+
+# Vercel
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
