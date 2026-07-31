@@ -1,68 +1,97 @@
 # PaySilo
 
-Confidential payroll for Safe treasuries, built on iExec Nox for the WTF!! Hackathon
-Summer Edition.
+Confidential payroll on Ethereum, built on iExec Nox — WTF!! Hackathon Summer Edition.
 
-A Safe executes ONE batched transaction. PaySilo wraps the aggregate payroll total
-into an ERC-7984 confidential token and fans it out to each contributor as an
-encrypted amount. Public: which Safe paid, the total, the recipient list. Hidden:
-what any individual earned. Recipients decrypt their own pay with plain MetaMask,
-and can grant an auditor view access to their own balance with one transaction.
+PaySilo runs a payroll batch in a single transaction. Individual amounts are encrypted
+client-side using iExec Nox's KMS before the transaction hits the chain. What is
+public: who paid, the aggregate total, the recipient list. What is hidden: what any
+individual earned. Recipients decrypt their own pay with MetaMask, and can grant an
+auditor view access with one additional transaction.
 
-The Safe is never modified. It does two things any Safe already can: approve an
-ERC-20 spender and call a function. Privacy composes on top.
+## Live deployment (Sepolia)
 
-## Repo map
+| Contract | Address |
+|----------|---------|
+| MockUSDC | [`0x1b3c959070292f9a0227780615ff119da04b6f51`](https://sepolia.etherscan.io/address/0x1b3c959070292f9a0227780615ff119da04b6f51) |
+| PaySilo  | [`0x7e63e5651c490d805168856b2cc172434116f028`](https://sepolia.etherscan.io/address/0x7e63e5651c490d805168856b2cc172434116f028) |
+| NoxCompute (iExec, pre-deployed) | `0x24Ef36Ec5b626D7DCD09a98F3083c2758F0F77bF` |
+
+## Repo layout
 
 ```
 contracts/
-  contracts/PaySilo.sol        # wrapper + confidential batch fan-out + auditor ACL
-  contracts/MockUSDC.sol       # mintable Sepolia test payroll token
-  scripts/deployMockUSDC.ts    # step 1: test token
-  scripts/deploy.ts            # step 2: PaySilo (payrollAdmin = your Safe)
-  scripts/checkSetup.ts        # pre-flight: all invariants green before any demo
-  scripts/runPayrollViaSafe.ts # THE flow: encrypt client-side, one Safe tx (approve+runPayroll)
-  scripts/runPayroll.ts        # same flow from a plain EOA admin (early testing only)
-  scripts/decryptBalance.ts    # recipient / third-party / auditor decryption proof
-  scripts/grantAuditorAccess.ts# selective disclosure grant
-  test/PaySilo.test.ts         # local e2e vs the Docker Nox stack (encrypt->pay->decrypt->grant)
+  contracts/PaySilo.sol          # ERC-7984 wrapper + confidential batch fan-out + auditor ACL
+  contracts/MockUSDC.sol         # mintable Sepolia test stablecoin
+  scripts/deploy.ts              # deploy PaySilo
+  scripts/deployMockUSDC.ts      # deploy MockUSDC
+  scripts/runPayroll.ts          # encrypt amounts client-side + submit batch
+  scripts/demoFlow.ts            # full e2e demo: decrypt → deny → grant → audit
+  scripts/decryptBalance.ts      # decrypt a single balance (as recipient or auditor)
+  scripts/grantAuditorAccess.ts  # recipient grants auditor view access
+  scripts/checkSetup.ts          # pre-flight invariant checks
+  test/PaySilo.test.ts           # local e2e against the Docker Nox stack
+frontend/
+  app/page.tsx                   # landing
+  app/admin/page.tsx             # payroll admin UI
+  app/recipient/page.tsx         # recipient decrypt UI
+  app/audit/page.tsx             # auditor decrypt UI
 docs/
-  SETUP.md                     # zero-to-live-Sepolia, in order
-  ARCHITECTURE.md              # handle flow, ACL model, who-learns-what, honest limits
-  feedback.md                  # required deliverable, updated as we build
-demo/
-  script.md                    # 4-min video beat sheet with pre-record gate
-  submission.md                # checklist + X post draft
+  SETUP.md                       # zero-to-live-Sepolia walkthrough
+  ARCHITECTURE.md                # handle flow, ACL model, privacy guarantees
+  feedback.md                    # iExec Nox tooling feedback (hackathon deliverable)
+
 ```
 
 ## Quick start
 
-See `docs/SETUP.md` for the full ordered walkthrough. Short version:
+### Contracts
 
 ```bash
-cd contracts && cp .env.example .env && npm install && npm run compile
-npm test                    # needs Docker; boots the real local Nox stack
-npm run deploy:mock         # then set UNDERLYING_TOKEN
-npm run deploy:sepolia      # then set PAYSILO_ADDRESS; verify on Etherscan
-npm run check:sepolia       # everything green before proceeding
-npm run payroll:safe        # one Safe tx, whole team paid, amounts hidden
+cd contracts
+cp .env.example .env       # fill in SEPOLIA_RPC_URL and DEPLOYER_PRIVATE_KEY
+npm install
+npm run compile
+npm test                   # requires Docker — boots the local Nox stack
+npm run deploy:mock        # deploy MockUSDC, set UNDERLYING_TOKEN in .env
+npm run deploy:sepolia     # deploy PaySilo, set PAYSILO_ADDRESS in .env
+npm run check:sepolia      # confirm all invariants pass
+npm run payroll:sepolia    # encrypt + submit a payroll batch
+npm run demo:sepolia       # decrypt → deny → grant → auditor decrypt
 ```
 
-## Honesty ledger (what is verified vs not)
+### Frontend
 
-- Contract and scripts are written against the ACTUAL published package source
-  (`@iexec-nox/nox-confidential-contracts` 0.2.2, `nox-protocol-contracts` 0.2.4,
-  `@iexec-nox/handle` 0.1.0-beta.13, `@safe-global/protocol-kit` 8.0.4): interfaces
-  extracted from the npm tarballs, Safe API confirmed from its .d.ts files.
-- Compilation and deployment have NOT yet been executed (built in a sandbox without
-  access to the solc binary host). First local `npm run compile` is step one.
-- Nothing in this repo is claimed live until it is live. See docs/feedback.md and
-  the pre-record gate in demo/script.md.
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local   # fill in contract addresses
+npm run dev                         # http://localhost:3000
+npm run build                       # production build
+```
+
+## How it works
+
+1. **Encrypt** — the payroll admin calls `encryptInput` for each recipient amount.
+   The iExec KMS returns an encrypted handle + proof. Plaintext never leaves the client.
+
+2. **Submit** — `runPayroll` is called with the handles and proofs. `NoxCompute.validateInputProof`
+   verifies each proof on-chain, then `Nox.fromExternal` stores the encrypted amounts.
+   The tx calldata contains handles (opaque bytes), not plaintext amounts.
+
+3. **Decrypt** — a recipient calls `handleClient.decrypt(handle)`. The KMS checks the
+   on-chain ACL: if the caller owns the handle, it returns the plaintext. No smart
+   contract call needed for decryption.
+
+4. **Audit** — a recipient calls `grantAuditorAccess(auditorAddress)`, which calls
+   `Nox.addViewer`. The auditor can then decrypt that recipient's balance handle.
 
 ## Stack
 
-Solidity 0.8.35 · Hardhat 3 + viem · iExec Nox (ERC-7984, Intel TDX TEEs) ·
-Safe Protocol Kit v8 · Ethereum Sepolia (NoxCompute: 0x24Ef36Ec5b626D7DCD09a98F3083c2758F0F77bF)
+- Solidity 0.8.35
+- Hardhat 3 + viem
+- iExec Nox (`@iexec-nox/nox-confidential-contracts` 0.2.2, `@iexec-nox/handle` 0.1.0-beta.13)
+- Next.js 15 + Tailwind CSS
+- Ethereum Sepolia
 
 ## License
 
