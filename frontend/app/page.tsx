@@ -16,7 +16,7 @@ export default function Landing() {
   return (
     <>
       <section className="relative">
-        <div className="mx-auto grid max-w-6xl items-center gap-14 px-6 pb-24 pt-16 lg:grid-cols-[1fr_1.05fr] lg:pb-28 lg:pt-24">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 pb-14 pt-10 sm:px-6 sm:pb-20 sm:pt-14 lg:grid-cols-[1fr_1.05fr] lg:gap-14 lg:pb-28 lg:pt-24">
           <div>
             <motion.p
               className="eyebrow"
@@ -27,7 +27,7 @@ export default function Landing() {
               Confidential payroll for Safe treasuries
             </motion.p>
             <motion.h1
-              className="mt-5 font-display text-5xl font-semibold leading-[1.03] tracking-tight sm:text-6xl"
+              className="mt-5 font-display text-4xl font-semibold leading-[1.06] tracking-tight sm:text-5xl lg:text-6xl lg:leading-[1.03]"
               initial={reduced ? false : { opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
@@ -86,7 +86,7 @@ export default function Landing() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Card className="relative h-[480px] overflow-hidden border-line bg-black/[0.96] p-0">
+            <Card className="relative h-[300px] overflow-hidden border-line sm:h-[420px] lg:h-[480px] bg-black/[0.96] p-0">
               <Spotlight className="-top-40 left-0 md:-top-20 md:left-40" size={320} />
               <SplineScene
                 scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
@@ -106,7 +106,7 @@ export default function Landing() {
       </section>
 
       <section id="proof" className="border-t border-line/70 bg-panel-2/40 scroll-mt-14">
-        <div className="mx-auto max-w-6xl px-6 py-20">
+        <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-20">
           <Reveal>
             <p className="eyebrow">A record that can&apos;t argue back</p>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -120,7 +120,7 @@ export default function Landing() {
       </section>
 
       <section id="how" className="border-t border-line/70 scroll-mt-14">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24">
           <Reveal>
             <p className="eyebrow">How a batch settles</p>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -146,7 +146,7 @@ export default function Landing() {
       </section>
 
       <section className="border-t border-line/70 bg-panel-2/40">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24">
           <Reveal>
             <p className="eyebrow">The full path</p>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -158,7 +158,7 @@ export default function Landing() {
             </p>
           </Reveal>
           <Reveal delay={0.15}>
-            <div className="mt-10 flex flex-col gap-2 sm:flex-row sm:items-stretch sm:gap-0">
+            <div className="mt-10 flex flex-col gap-3 lg:flex-row lg:items-stretch lg:gap-0">
               {PIPELINE.map((p, i) => (
                 <div key={p.who} className="flex flex-1 items-stretch">
                   <Card className="flex-1 rounded-lg p-4">
@@ -178,7 +178,7 @@ export default function Landing() {
       </section>
 
       <section className="border-t border-line/70">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24">
           <Reveal>
             <p className="eyebrow">Disclosure model</p>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -213,7 +213,7 @@ export default function Landing() {
       </section>
 
       <section className="border-t border-line/70 bg-panel-2/40">
-        <div className="mx-auto max-w-6xl px-6 py-24">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24">
           <Reveal>
             <p className="eyebrow">Live on Sepolia</p>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -225,7 +225,7 @@ export default function Landing() {
       </section>
 
       <section id="faq" className="border-t border-line/70 scroll-mt-14">
-        <div className="mx-auto max-w-3xl px-6 py-24">
+        <div className="mx-auto max-w-3xl px-4 py-14 sm:px-6 sm:py-24">
           <Reveal>
             <p className="eyebrow">Questions you&apos;d actually ask</p>
             <h2 className="mt-4 font-display text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -249,7 +249,7 @@ export default function Landing() {
       </section>
 
       <section className="border-t border-line/70">
-        <div className="mx-auto max-w-6xl px-6 py-24 text-center">
+        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-24 text-center">
           <Reveal>
             <h2 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
               Your first sealed batch is one transaction away.

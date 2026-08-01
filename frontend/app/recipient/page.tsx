@@ -104,9 +104,9 @@ export default function RecipientPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-14">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-5 sm:py-14">
       <p className="eyebrow">Recipient</p>
-      <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight">My pay</h1>
+      <h1 className="mt-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">My pay</h1>
       <p className="mt-2 max-w-xl text-sm text-ink-dim">
         Your balance lives on-chain as an encrypted handle. Decrypting happens
         between your wallet and the key service; nothing is revealed to anyone
@@ -121,7 +121,7 @@ export default function RecipientPage() {
             <p className="eyebrow">balance handle · public, unreadable</p>
             <p className="mt-1 break-all font-mono text-xs text-cipher">{handle ?? "—"}</p>
 
-            <div className="mt-6 flex items-end justify-between gap-4">
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="eyebrow">your balance</p>
                 <p className="mt-1 text-2xl">
@@ -137,7 +137,7 @@ export default function RecipientPage() {
               <button
                 onClick={decrypt}
                 disabled={!handle || busy}
-                className="rounded-md border border-seal/50 bg-seal/10 px-5 py-2.5 font-mono text-sm text-seal transition-all hover:bg-seal/20 hover:shadow-seal disabled:opacity-40"
+                className="w-full rounded-md border border-seal/50 bg-seal/10 px-5 py-2.5 font-mono text-sm text-seal transition-all hover:bg-seal/20 hover:shadow-seal disabled:opacity-40 sm:w-auto"
               >
                 {busy ? "Decrypting…" : "Decrypt my balance"}
               </button>

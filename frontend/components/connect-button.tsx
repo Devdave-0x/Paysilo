@@ -26,7 +26,8 @@ export function ConnectButton() {
       disabled={isPending}
       className="rounded-md border border-seal/50 bg-seal/10 px-4 py-1.5 font-mono text-xs text-seal transition-all hover:bg-seal/20 hover:shadow-seal disabled:opacity-50"
     >
-      {isPending ? "Connecting…" : "Connect wallet"}
+      <span className="hidden sm:inline">{isPending ? "Connecting…" : "Connect wallet"}</span>
+      <span className="sm:hidden">{isPending ? "…" : "Connect"}</span>
     </button>
   );
 }

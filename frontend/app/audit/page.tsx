@@ -38,9 +38,9 @@ export default function AuditPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl px-5 py-14">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-5 sm:py-14">
       <p className="eyebrow">Auditor</p>
-      <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight">Audit a balance</h1>
+      <h1 className="mt-3 font-display text-2xl font-semibold tracking-tight sm:text-3xl">Audit a balance</h1>
       <p className="mt-2 max-w-xl text-sm text-ink-dim">
         Enter a recipient&apos;s address and attempt decryption with your connected
         wallet. You will read their balance only if they granted you access. A
@@ -51,7 +51,7 @@ export default function AuditPage() {
         <label className="eyebrow" htmlFor="target">
           Recipient address
         </label>
-        <div className="mt-2 flex gap-2">
+        <div className="mt-2 flex flex-col gap-2 sm:flex-row">
           <input
             id="target"
             value={target}
@@ -66,7 +66,7 @@ export default function AuditPage() {
           <button
             onClick={attempt}
             disabled={!isConnected || !configured || !isAddress(target) || result.state === "checking"}
-            className="rounded-md border border-seal/50 bg-seal/10 px-5 py-2.5 font-mono text-sm text-seal transition-all hover:bg-seal/20 hover:shadow-seal disabled:opacity-40"
+            className="w-full rounded-md border border-seal/50 bg-seal/10 px-5 py-2.5 font-mono text-sm text-seal transition-all hover:bg-seal/20 hover:shadow-seal disabled:opacity-40 sm:w-auto"
           >
             {result.state === "checking" ? "Attempting…" : "Attempt decryption"}
           </button>

@@ -4,7 +4,7 @@ import { explorerAddr, short } from "@/lib/format";
 export function Footer() {
   return (
     <footer className="border-t border-line/70">
-      <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 sm:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 sm:px-6 sm:py-14 grid-cols-2 sm:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <p className="font-display text-lg font-semibold">
             Pay<span className="text-cipher">Silo</span>
